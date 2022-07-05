@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ShowImage from './ShowImage';
 import moment from 'moment';
 import { addItem, updateItem, removeItem } from './cartHelpers';
+import userEvent from '@testing-library/user-event';
 
 const Card = ({
   product,
@@ -12,12 +13,12 @@ const Card = ({
   showRemoveProductButton = false,
   setRun = f => f,
   run = undefined
-  // changeCartSize
 }) => {
   const [redirect, setRedirect] = useState(false);
-  const [count, setCount] = useState(product.count);
+  const [count, setCount] = useState(1);
 
-  const showViewButton = showViewProductButton => {
+
+ const showViewButton = showViewProductButton => {
     return (
       showViewProductButton && (
         <Link to={`/product/${product._id}`} className="mr-2">
@@ -26,9 +27,13 @@ const Card = ({
       )
     );
   };
+
+
+
+
   const addToCart = () => {
-    // console.log('added');
-    addItem(product, setRedirect(true));
+    console.log(product);
+    addItem(product, setRedirect(false));
   };
 
   const shouldRedirect = redirect => {
@@ -94,6 +99,9 @@ const Card = ({
   };
   return (
     <div className="card ">
+        
+        {product?
+        <>
       <div className="card-header card-header-1 ">{product.name}</div>
       <div className="card-body">
         {shouldRedirect(redirect)}
@@ -113,6 +121,7 @@ const Card = ({
 
         {showCartUpdateOptions(cartUpdate)}
       </div>
+    </>:null}
     </div>
   );
 };

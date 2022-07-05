@@ -5,17 +5,22 @@ import { getCart } from './cartHelpers';
 import Card from './Card';
 import Checkout from './Checkout';
 
+
 const Cart = () => {
     const [items, setItems] = useState([]);
     const [run, setRun] = useState(false);
+    
 
     useEffect(() => {
         setItems(getCart());
     }, [run]);
 
     const showItems = items => {
+        console.log(items);
         return (
+            
             <div>
+
                 <h2>Your cart has {`${items.length}`} items</h2>
                 <hr />
                 {items.map((product, i) => (
@@ -35,23 +40,24 @@ const Cart = () => {
 
     const noItemsMessage = () => (
         <h2>
-            Your cart is empty. <br /> <Link to="/shop">Continue shopping</Link>
+            Seu Carrinho esta vazio. <br /> <Link to="/shop">Continue Comprando</Link>
         </h2>
     );
 
     return (
         <Layout
-            title="Shopping Cart"
-            description="Manage your cart items. Add remove checkout or continue shopping."
+            title="Carrinho de compras"
+            description="Gerencie seus itens do carrinho. "
             className="container-fluid"
         >
             <div className="row">
                 <div className="col-6">{items.length > 0 ? showItems(items) : noItemsMessage()}</div>
 
                 <div className="col-6">
-                    <h2 className="mb-4">Your cart summary</h2>
+                    <h2 className="mb-4">
+                        Resumo do seu carrinho</h2>
                     <hr />
-                    <Checkout products={items} setRun={setRun} run={run} />
+                    <Checkout products={items}  />
                 </div>
             </div>
         </Layout>

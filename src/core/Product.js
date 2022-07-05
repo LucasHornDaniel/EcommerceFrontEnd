@@ -19,8 +19,10 @@ const Product = props => {
                     if (data.error) {
                         setError(data.error);
                     } else {
+                        console.log(data)
                         setRelatedProduct(data);
                     }
+                    
                 });
             }
         });

@@ -12,7 +12,8 @@ import CreateCategory from './admin/CreateCategory';
 import CreateProduct from './admin/CreateProduct';
 import Shop from './core/Shop';
 import Product from './core/Product';
-import Cart from './core/Card';
+import Cart from './core/Cart';
+
 
 
 
