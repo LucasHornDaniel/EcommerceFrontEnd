@@ -42,7 +42,7 @@ const ManageProducts = () => {
             <div className="row">
                 <div className="col-12">
                     <h2 className="text-center">
-                        Total {products.length} products
+                        Total {products.length} produtos
                     </h2>
                     <hr />
                     <ul className="list-group">

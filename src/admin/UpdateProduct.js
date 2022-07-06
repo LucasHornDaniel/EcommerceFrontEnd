@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../core/Layout';
 import { isAuthenticated } from '../auth';
-import { Link, Redirect } from 'react-router-dom';
-import { getProduct, getCategories, updateProduct } from './apiAdmin';
 
-const UpdateProduct = ({ match }) => {
+import { createProduct, getCategories, getProduct, updateProduct } from './apiAdmin';
+
+const UpdateProduct = ({match}) => {
     const [values, setValues] = useState({
         name: '',
-        description: '',
+        discription: '',
         price: '',
         categories: [],
         category: '',
@@ -15,58 +15,56 @@ const UpdateProduct = ({ match }) => {
         quantity: '',
         photo: '',
         loading: false,
-        error: false,
+        error: '',
         createdProduct: '',
         redirectToProfile: false,
-        formData: ''
+        formData: new FormData()
     });
-    const [categories, setCategories] = useState([]);
 
     const { user, token } = isAuthenticated();
     const {
         name,
-        description,
+        discription,
         price,
-        // categories,
         category,
-        shipping,
+        categories,
         quantity,
         loading,
         error,
         createdProduct,
-        redirectToProfile,
         formData
     } = values;
 
-    const init = productId => {
-        getProduct(productId).then(data => {
-            if (data.error) {
-                setValues({ ...values, error: data.error });
-            } else {
-                // populate the state
-                setValues({
-                    ...values,
-                    name: data.name,
-                    description: data.description,
-                    price: data.price,
-                    category: data.category._id,
-                    shipping: data.shipping,
-                    quantity: data.quantity,
-                    formData: new FormData()
-                });
-                // load categories
-                initCategories();
-            }
-        });
-    };
+const init = (productId) => {
+    getProduct(productId).then(data => {
+        if(data.error){
+            setValues({...values, error:data.error})
+        }else{
+            setValues({...values, 
+                name: data.name, 
+                discription: data.discription, 
+                price:data.price, 
+                category:data.category._id, 
+                shipping: data.shipping, 
+                quantity: data.quantity, 
+                formData: new FormData })
+            initCategories()
+        }
+    })
+}
 
-    // load categories and set form data
     const initCategories = () => {
         getCategories().then(data => {
+            
             if (data.error) {
+                console.log(error);
                 setValues({ ...values, error: data.error });
             } else {
-                setCategories(data);
+                setValues({
+                    categories: data,
+                    formData: new FormData()
+                });
+                
             }
         });
     };
@@ -92,13 +90,11 @@ const UpdateProduct = ({ match }) => {
                 setValues({
                     ...values,
                     name: '',
-                    description: '',
+                    discription: '',
                     photo: '',
                     price: '',
                     quantity: '',
                     loading: false,
-                    error: false,
-                    redirectToProfile: true,
                     createdProduct: data.name
                 });
             }
@@ -107,56 +103,56 @@ const UpdateProduct = ({ match }) => {
 
     const newPostForm = () => (
         <form className="mb-3" onSubmit={clickSubmit}>
-            <h4>Post Photo</h4>
+            <h4>Foto do produto</h4>
             <div className="form-group">
-                <label className="btn btn-secondary">
+                <label className="btn btn-dark">
                     <input onChange={handleChange('photo')} type="file" name="photo" accept="image/*" />
                 </label>
             </div>
 
             <div className="form-group">
-                <label className="text-muted">Name</label>
+                <label className="text-muted">Nome</label>
                 <input onChange={handleChange('name')} type="text" className="form-control" value={name} />
             </div>
 
             <div className="form-group">
-                <label className="text-muted">Description</label>
-                <textarea onChange={handleChange('description')} className="form-control" value={description} />
+                <label className="text-muted">Descrição</label>
+                <textarea onChange={handleChange('discription')} className="form-control" value={discription} />
             </div>
 
             <div className="form-group">
-                <label className="text-muted">Price</label>
+                <label className="text-muted">Preço</label>
                 <input onChange={handleChange('price')} type="number" className="form-control" value={price} />
             </div>
 
             <div className="form-group">
-                <label className="text-muted">Category</label>
+                <label className="text-muted">Categoria</label>
                 <select onChange={handleChange('category')} className="form-control">
-                    <option>Please select</option>
-                    {categories &&
+                    <option>Selecione uma categoria</option>
+                    { categories &&
                         categories.map((c, i) => (
                             <option key={i} value={c._id}>
                                 {c.name}
                             </option>
-                        ))}
+                        ))} 
                 </select>
             </div>
 
             <div className="form-group">
-                <label className="text-muted">Shipping</label>
+                <label className="text-muted">Envio</label>
                 <select onChange={handleChange('shipping')} className="form-control">
-                    <option>Please select</option>
+                    <option>Selecione</option>
                     <option value="0">No</option>
                     <option value="1">Yes</option>
                 </select>
             </div>
 
             <div className="form-group">
-                <label className="text-muted">Quantity</label>
+                <label className="text-muted">Quantidade</label>
                 <input onChange={handleChange('quantity')} type="number" className="form-control" value={quantity} />
             </div>
 
-            <button className="btn btn-outline-primary">Update Product</button>
+            <button className="btn btn-outline-primary">Editar Produto</button>
         </form>
     );
 
@@ -168,7 +164,7 @@ const UpdateProduct = ({ match }) => {
 
     const showSuccess = () => (
         <div className="alert alert-info" style={{ display: createdProduct ? '' : 'none' }}>
-            <h2>{`${createdProduct}`} is updated!</h2>
+            <h2>{`${createdProduct}`} Produto criado com sucesso</h2>
         </div>
     );
 
@@ -179,23 +175,14 @@ const UpdateProduct = ({ match }) => {
             </div>
         );
 
-    const redirectUser = () => {
-        if (redirectToProfile) {
-            if (!error) {
-                return <Redirect to="/" />;
-            }
-        }
-    };
-
     return (
-        <Layout title="Add a new product" description={`G'day ${user.name}, ready to add a new product?`}>
+        <Layout title="Editar produto" description={`Ola ${user.name}`}>
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     {showLoading()}
                     {showSuccess()}
                     {showError()}
                     {newPostForm()}
-                    {redirectUser()}
                 </div>
             </div>
         </Layout>

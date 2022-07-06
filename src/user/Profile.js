@@ -82,8 +82,8 @@ const Profile = ({ match }) => {
     );
 
     return (
-        <Layout title="Profile" description="Update your profile" className="container-fluid">
-            <h2 className="mb-4">Profile update</h2>
+        <Layout title="Perfil" description="Edite seu perfil" className="container-fluid">
+            <h2 className="mb-4">Editar perfil</h2>
             {profileUpdate(name, email, password)}
             {redirectUser(success)}
         </Layout>

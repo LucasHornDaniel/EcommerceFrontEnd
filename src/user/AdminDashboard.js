@@ -41,6 +41,11 @@ const AdminDashboard = () => {
                             Criar Produto
                         </Link>
                     </li>
+                    <li className="list-group-item">
+                        <Link className="nav-link" to="/admin/product">
+                            Editar produto
+                        </Link>
+                    </li>
                 </ul>
             </div>
         );

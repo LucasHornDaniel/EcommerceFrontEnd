@@ -81,22 +81,6 @@ export const listRelated = async productId => {
 
 
 
-export const processPayment = async (userId, token, paymentData) => {
-    try {
-        const response = await fetch(`${API}/braintree/payment/${userId}`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(paymentData)
-        });
-        return await response.json();
-    } catch (err) {
-        return console.log(err);
-    }
-};
 
 export const createOrder = async (userId, token, createOrderData) => {
     try {
